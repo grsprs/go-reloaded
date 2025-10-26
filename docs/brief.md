@@ -1,4 +1,4 @@
-# Enterprise Brief – Go Reloaded
+# Brief – Go Reloaded
 
 ## Overview
 **Go Reloaded** is a text transformation system designed for robust, auditable text processing. Its purpose is to read structured text files, interpret embedded transformation directives, and produce a correctly formatted output that adheres to predefined logical and grammatical rules.
