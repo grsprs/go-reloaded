@@ -1,6 +1,6 @@
 # Go Reloaded
 
-A professional Go project template for the "Go Reloaded" text transformation tool.
+"Go Reloaded" text transformation tool.
 
 ## Overview
 Go Reloaded is a small command-line text transformation system implemented in Go. It is intended as a demonstration of analysis-driven design, TDD-first development, and AI-assisted task planning.
