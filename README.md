@@ -16,4 +16,4 @@ go run ./cmd/go-reloaded
 See the `docs/` folder for detailed design documents and the `dev_journal.md` for development notes.
 
 ## Contributing
-Follow the Agile Task Plan in `docs/agile_task_plan_full.md` and ensure all changes include tests and documentation updates.
+Follow the Agile Task Plan in `docs/agile_task_plan.md` and ensure all changes include tests and documentation updates.
