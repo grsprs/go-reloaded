@@ -1,0 +1,6 @@
+# Go build and editor files
+/bin/
+/vendor/
+*.exe
+*.log
+.DS_Store
