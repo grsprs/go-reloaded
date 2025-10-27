@@ -1,79 +1,103 @@
-# Go Reloaded – Analysis and Design Document
+# Go Reloaded - Technical Analysis Document
 
-## 1. Problem Description
-The objective of **Go Reloaded** is to design a text processing tool that can read a text file, detect transformation indicators (such as `(hex)` or `(cap)`), and produce a reformatted output.  
-This task emphasizes the analysis and system design behind such transformations, not the implementation itself.
+## Project Overview
+Build a text processing tool that transforms input files through linguistic rules and formatting operations.
+
+## Core Transformation Specifications
+
+### Numeric Conversions
+- **Hexadecimal**: Identify pattern `(\w+)\s*\(hex\)`, convert to decimal
+- **Binary**: Identify pattern `(\w+)\s*\(bin\)`, convert to decimal
+- **Error Handling**: Preserve original text on invalid conversions
+
+### Text Case Operations
+- **Single Word**: `(up)`, `(low)`, `(cap)` modifiers
+- **Batch Processing**: `(modifier, n)` for multiple words
+- **Implementation**: String manipulation with word boundary detection
+
+### Punctuation Intelligence
+- **Single Marks**: `.,!?;:` - attach to preceding word
+- **Mark Groups**: `...`, `!?` - maintain grouping, attach to preceding word
+- **Spacing Rules**: Ensure proper word separation after punctuation
+
+### Quote Formatting
+- **Single Quotes**: Eliminate surrounding spaces
+- **Content Preservation**: Maintain internal spacing within quotes
+- **Pattern Matching**: Identify quote pairs and their content
+
+### Grammatical Corrections
+- **Article Rules**: `a` → `an` before vowels (a,e,i,o,u) and silent 'h'
+- **Context Analysis**: Evaluate following word initial sounds
+- **Exception Handling**: Account for words like "university", "hour"
+
+## System Architecture
+
+### Selected Approach: Pipeline Processing
+
+**Processing Flow:**
+```
+File Input → Text Tokenization → Transformation Pipeline → Text Reconstruction → File Output
+```
+
+**Transformation Pipeline Stages:**
+1. Number Conversion Engine
+2. Case Modification Handler
+3. Punctuation Formatter
+4. Quote Position Optimizer
+5. Article Correction System
+
+### Architecture Justification
+
+**Pipeline Advantages:**
+- **Modular Testing**: Each component independently verifiable
+- **Team Parallelism**: Concurrent development across stages
+- **Maintenance Simplicity**: Isolated bug identification and fixes
+- **Extensibility**: New transformations added as discrete stages
+- **Debug Transparency**: Clear data flow between processing steps
+
+**FSM Rejection Rationale:**
+- Increased complexity for marginal performance gain
+- Challenging to test individual transformation logic
+- Difficult to maintain with multiple team members
+- Limited extensibility for new rule types
+
+## Technical Implementation Strategy
+
+### Data Processing Approach
+- **Token-Based Processing**: Split text into processable units
+- **Transformation Detection**: Identify and categorize modification markers
+- **Sequential Application**: Apply transformations in dependency order
+- **Context Preservation**: Maintain text structure and meaning
+
+### Error Handling Protocol
+- Graceful failure for invalid transformations
+- Original text preservation on processing errors
+- Comprehensive input validation
+- Detailed error reporting for debugging
+
+### Performance Considerations
+- Memory-efficient text processing
+- Optimized string manipulation operations
+- Scalable architecture for large files
+- Balanced trade-off between speed and maintainability
+
+## Quality Assurance Framework
+
+### Validation Methodology
+- Unit testing per transformation component
+- Integration testing for pipeline workflow
+- Golden test verification against expected outputs
+- Performance benchmarking for optimization
+
+### Success Metrics
+- 100% transformation rule accuracy
+- All test cases passing consistently
+- Efficient processing of benchmark files
+- Clean, maintainable code structure
+- Comprehensive documentation coverage
+
+## Development Priority
+Focus on architectural clarity and transformation accuracy before optimization. The pipeline model ensures project success through systematic, testable development approach.
 
 ---
-
-## 2. Transformation Rules
-
-### 🔢 Number Conversion
-- Replace hexadecimal numbers before `(hex)` with their decimal equivalents.  
-  Example: `1E (hex)` → `30`
-- Replace binary numbers before `(bin)` with their decimal equivalents.  
-  Example: `10 (bin)` → `2`
-
----
-
-### 🔠 Case Transformations
-- `(up)` → converts the previous word to uppercase.  
-- `(low)` → converts the previous word to lowercase.  
-- `(cap)` → capitalizes the previous word.  
-- `(up, n)`, `(low, n)`, `(cap, n)` → apply the transformation to *n* previous words.
-
-Example:  
-`This is so exciting (up, 2)` → `This is SO EXCITING`
-
----
-
-### ✍️ Punctuation Formatting
-- Punctuation marks (`.,!?;:`) should attach directly to the preceding word and be followed by a space before the next word.  
-- Multiple punctuation groups (`!?`, `...`) should remain together.  
-
-Example:  
-`I was sitting over there ,and then BAMM !!` → `I was sitting over there, and then BAMM!!`
-
----
-
-### 🧩 Quotation Handling
-- Single quotes (`'`) should be placed directly around the quoted text.  
-Example: `' I am happy '` → `'I am happy'`
-
----
-
-### 📝 Article Correction
-- Replace `a` with `an` when followed by a word beginning with a vowel or an “h”.  
-Example: `a honest story` → `an honest story`
-
----
-
-## 3. Architectural Comparison
-
-### 🏗️ Pipeline Model
-Each transformation rule is handled in a separate, sequential processing step.  
-**Advantages:**
-- Modular structure  
-- Easy testing per stage  
-- Readable and maintainable  
-
-### ⚙️ Finite-State Machine (FSM)
-Processes the text in a single pass, changing behavior based on the current state.  
-**Advantages:**
-- Efficient  
-- Compact logic  
-
-**Disadvantages:**  
-- More complex to debug and modify.
-
----
-
-## 4. Architectural Choice
-The **Pipeline** model is selected as the preferred architecture.  
-It allows clearer separation of logic, easier audits, and independent testing of each transformation stage.
-
----
-
-## 5. Summary
-**Go Reloaded** focuses on text clarity and structured processing.  
-The project highlights logical consistency, architectural reasoning, and the ability to document thought processes effectively before implementation.
+*Analysis complete - ready for implementation phase*

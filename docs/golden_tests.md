@@ -1,72 +1,137 @@
-# Go Reloaded – Golden Test Set
+# Golden Test Suite – Go Reloaded Text Processor
 
-The following test cases describe how the program is expected to behave once implemented.  
-They are expressed in natural language to illustrate understanding of the transformation rules.
+## Overview
+This document defines the official **golden test set** used to validate the Go Reloaded text transformation engine.  
+Each test describes an **input**, the **expected output**, and the **functional behavior** being verified.
 
 ---
 
-## Test 1 – Number Conversion
+## Core Validation Tests
+
+### Test 1 – Number System Conversions
 **Input:**  
-`Simply add 1E (hex) and 10 (bin) and you will see the result is 68.`
+`Add 1A (hex) and 1010 (bin) to get the result.`  
+**Expected Output:**  
+`Add 26 and 10 to get the result.`  
+**Purpose:** Validate hexadecimal and binary numeric conversions.
+
+---
+
+### Test 2 – Basic Case Transformations
+**Input:**  
+`make this IMPORTANT (low) and that small (up)`  
+**Expected Output:**  
+`make this important and that SMALL`  
+**Purpose:** Ensure correct single-word case transformations.
+
+---
+
+### Test 3 – Multi-Word Case Operations
+**Input:**  
+`transform these three words (cap, 3) properly`  
+**Expected Output:**  
+`Transform These Three words properly`  
+**Purpose:** Validate batch case transformation logic with word counts.
+
+---
+
+### Test 4 – Punctuation Formatting
+**Input:**  
+`Hello , world ... how are you today ?`  
+**Expected Output:**  
+`Hello, world... how are you today?`  
+**Purpose:** Test punctuation spacing and grouping consistency.
+
+---
+
+### Test 5 – Quote Cleaning
+**Input:**  
+`He said ' I am ready ' and left ' immediately '`  
+**Expected Output:**  
+`He said 'I am ready' and left 'immediately'`  
+**Purpose:** Verify proper quote spacing cleanup.
+
+---
+
+### Test 6 – Article Correction
+**Input:**  
+`I saw a apple and a hour later a university.`  
+**Expected Output:**  
+`I saw an apple and an hour later a university.`  
+**Purpose:** Ensure contextual “a/an” grammatical correction.
+
+---
+
+## Edge Case Tests
+
+### Test 7 – Invalid Number Handling
+**Input:**  
+`Convert GH (hex) and 23 (bin) should remain.`  
+**Expected Output:**  
+`Convert GH (hex) and 23 (bin) should remain.`  
+**Purpose:** Verify that invalid numeric patterns remain unchanged.
+
+---
+
+### Test 8 – Excessive Word Count
+**Input:**  
+`only two words here (up, 5) total`  
+**Expected Output:**  
+`ONLY TWO words here total`  
+**Purpose:** Confirm correct behavior when modifier count exceeds word limit.
+
+---
+
+### Test 9 – Complex Punctuation
+**Input:**  
+`Wait ... really ! ? , ; : all together !!`  
+**Expected Output:**  
+`Wait... really!?,;: all together!!`  
+**Purpose:** Validate multi-symbol punctuation clustering.
+
+---
+
+### Test 10 – Nested Transformations
+**Input:**  
+`1F (hex) (up) becomes uppercase number`  
+**Expected Output:**  
+`31 becomes uppercase number`  
+**Purpose:** Confirm sequential transformation handling within the same token.
+
+---
+
+### Test 11 – Mixed Transformations
+**Input:**  
+`' QUOTED TEXT (low) ' needs formatting , correctly !`  
+**Expected Output:**  
+`'quoted text' needs formatting, correctly!`  
+**Purpose:** Validate combined quote and punctuation handling.
+
+---
+
+## Integration Test
+
+### Test 12 – Comprehensive Example
+**Input:**  
+`Start with 1F (hex) and apply (up, 2) transformations. Format ' this quote ' and handle a hour correctly. Don't forget punctuation , like this ... should work !`  
 
 **Expected Output:**  
-`Simply add 30 and 2 and you will see the result is 68.`
+`Start with 31 and APPLY TRANSFORMATIONS. Format 'this quote' and handle an hour correctly. Don't forget punctuation, like this... should work!`  
+
+**Purpose:** Full integration validation of all transformation stages working together.
 
 ---
 
-## Test 2 – Multi-word Casing
-**Input:**  
-`This is so exciting (up, 2)!`
-
-**Expected Output:**  
-`This is SO EXCITING!`
-
----
-
-## Test 3 – Punctuation Formatting
-**Input:**  
-`Punctuation tests are ... kinda boring ,what do you think ?`
-
-**Expected Output:**  
-`Punctuation tests are... kinda boring, what do you think?`
+## Validation Criteria
+- All transformations applied **in correct logical order**
+- Proper **spacing and punctuation formatting**
+- Accurate **numeric conversions**
+- Consistent **text case modification**
+- Correct **quote and article handling**
+- Original **semantic meaning preserved**
 
 ---
 
-## Test 4 – Quotation Formatting
-**Input:**  
-`As Elton John said: ' I am the most well-known homosexual in the world '`
-
-**Expected Output:**  
-`As Elton John said: 'I am the most well-known homosexual in the world'`
-
----
-
-## Test 5 – Grammar Correction
-**Input:**  
-`There is no greater agony than bearing a untold story inside you.`
-
-**Expected Output:**  
-`There is no greater agony than bearing an untold story inside you.`
-
----
-
-## Test 6 – Combined Rules
-**Input:**  
-`A honest man said: ' I saw 1E (hex) cats ,and 10 (bin) dogs (up, 3) !'`
-
-**Expected Output:**  
-`An honest man said: 'I saw 30 cats, and 2 DOGS!'`
-
----
-
-## Test 7 – Complex Paragraph
-**Input:**  
-`it (cap) was the best of times, it was the worst of times (up) , it was the age of wisdom, it was the age of foolishness (cap, 6) , it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, IT WAS THE (low, 3) winter of despair.`
-
-**Expected Output:**  
-`It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.`
-
----
-
-## General Validation Rule
-If the output matches the examples above in structure, spacing, and logic, the transformation process can be considered functionally correct.
+**Document Owner:** QA Engineering  
+**Validation Standard:** Golden Test Protocol v1.0  
+**Last Updated:** October 2025
