@@ -1,1 +1,0 @@
-Convert GH (hex) and 23 (bin) should remain.

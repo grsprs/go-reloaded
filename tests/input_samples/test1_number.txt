@@ -1,1 +1,0 @@
-Add 1A (hex) and 1010 (bin) to get the result.
