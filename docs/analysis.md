@@ -1,5 +1,9 @@
 # Technical Analysis - Go Reloaded
 
+**Author:** Spiros Nikoloudakis  
+**Date:** September 1, 2025  
+**Version:** 1.0
+
 ## System Architecture
 
 ### Pipeline Processing Model

@@ -1,5 +1,9 @@
 # Project Brief – Go Reloaded
 
+**Author:** Spiros Nikoloudakis  
+**Date:** September 1, 2025  
+**Version:** 1.0
+
 ## Overview
 Modular text processing system in Go that applies intelligent transformations to improve text readability and consistency.
 

@@ -1,5 +1,9 @@
 # Development Plan - Go Reloaded
 
+**Author:** Spiros Nikoloudakis  
+**Date:** September 1, 2025  
+**Version:** 1.0
+
 ## Overview
 TDD-driven development of a modular text transformation system with AI assistance and golden test validation.
 
