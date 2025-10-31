@@ -65,7 +65,7 @@ type demo\output.txt
 ### **Code Review Path**
 4. **[Source Code Walkthrough](#-source-code-walkthrough)** - Navigate implementation
 5. **[Golden Tests](docs/golden_tests.md)** - Validation approach and results
-6. **[Test Execution](#test-execution)** - Run tests yourself
+6. **[Test Execution](#-test-execution)** - Run tests yourself
 
 ### **Quality Assurance**
 7. **[Code Quality](QUALITY.md)** - Metrics and standards compliance
