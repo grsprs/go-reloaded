@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    - run: |
+        GOOS=windows GOARCH=amd64 go build -o go-reloaded-windows.exe ./cmd/go-reloaded
+        GOOS=linux GOARCH=amd64 go build -o go-reloaded-linux ./cmd/go-reloaded
+        GOOS=darwin GOARCH=amd64 go build -o go-reloaded-macos ./cmd/go-reloaded
+    - uses: softprops/action-gh-release@v1
+      with:
+        files: go-reloaded-*
