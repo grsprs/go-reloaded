@@ -81,21 +81,21 @@ type demo\output.txt
 ## 🔍 Source Code Walkthrough
 
 ### **Entry Point**
-- **[`cmd/go-reloaded/main.go`](cmd/go-reloaded/main.go)** - Application entry, argument handling
+- [**cmd/go-reloaded/main.go**](./cmd/go-reloaded/main.go) - Application entry, argument handling
 
 ### **Core Processing**
-- **[`internal/processor/processor.go`](internal/processor/processor.go)** - Main orchestration
-- **[`internal/fileio/fileio.go`](internal/fileio/fileio.go)** - File I/O operations
+- [**internal/processor/processor.go**](./internal/processor/processor.go) - Main orchestration
+- [**internal/fileio/fileio.go**](./internal/fileio/fileio.go) - File I/O operations
 
 ### **Transformation Modules** (Review for requirement compliance)
-- **[`internal/processor/numbers.go`](internal/processor/numbers.go)** - Hex/Binary conversions
-- **[`internal/processor/case.go`](internal/processor/case.go)** - Case transformations
-- **[`internal/processor/punctuation.go`](internal/processor/punctuation.go)** - Punctuation formatting
-- **[`internal/processor/quotes.go`](internal/processor/quotes.go)** - Quote normalization
-- **[`internal/processor/articles.go`](internal/processor/articles.go)** - Article correction
+- [**internal/processor/numbers.go**](./internal/processor/numbers.go) - Hex/Binary conversions
+- [**internal/processor/case.go**](./internal/processor/case.go) - Case transformations
+- [**internal/processor/punctuation.go**](./internal/processor/punctuation.go) - Punctuation formatting
+- [**internal/processor/quotes.go**](./internal/processor/quotes.go) - Quote normalization
+- [**internal/processor/articles.go**](./internal/processor/articles.go) - Article correction
 
 ### **Testing**
-- **[`tests/golden_test.go`](tests/golden_test.go)** - Complete test suite
+- [**tests/golden_test.go**](./tests/golden_test.go) - Complete test suite
 
 ---
 
