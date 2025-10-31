@@ -10,45 +10,47 @@ import (
 
 // correctArticles adjusts 'a' and 'an' before appropriate words
 func correctArticles(text string) string {
-	words := strings.Fields(text)
-	for i := 0; i < len(words)-1; i++ {
-		word := strings.ToLower(words[i])
-		next := strings.ToLower(words[i+1])
+	re := regexp.MustCompile(`\b(a|an)\s+(\w+)`)
+	return re.ReplaceAllStringFunc(text, func(match string) string {
+		parts := strings.Fields(match)
+		if len(parts) != 2 {
+			return match
+		}
+		next := strings.ToLower(parts[1])
+		
+		if shouldUseAn(next) {
+			return "an " + parts[1]
+		}
+		return "a " + parts[1]
+	})
+}
 
-		if word == "a" || word == "an" {
-			// Rules for when to use "an"
-			useAn := false
-
-			// If starts with vowel sound
-			if matched, _ := regexp.MatchString(`^[aeiou]`, next); matched {
-				useAn = true
+// shouldUseAn determines if "an" should be used based on phonetic rules
+func shouldUseAn(word string) bool {
+	if len(word) == 0 {
+		return false
+	}
+	
+	first := word[0]
+	// Vowel sounds
+	if strings.ContainsRune("aeiou", rune(first)) {
+		// Consonant sound exceptions for 'u'
+		if first == 'u' && len(word) > 1 {
+			second := word[1]
+			// Only 'un-', 'us-', 'ur-' when they sound like 'yun', 'yus', 'yur'
+			if second == 'n' && (strings.HasPrefix(word, "uni") || strings.HasPrefix(word, "unk")) {
+				return false
 			}
-
-			// Exceptions (words that start with vowel but sound like consonant)
-			exceptionsA := []string{"university", "unicorn", "european", "one", "user", "unit"}
-			for _, ex := range exceptionsA {
-				if strings.HasPrefix(next, ex) {
-					useAn = false
-					break
-				}
-			}
-
-			// Words with silent 'h' that require 'an'
-			exceptionsAn := []string{"hour", "honest", "honor", "heir"}
-			for _, ex := range exceptionsAn {
-				if strings.HasPrefix(next, ex) {
-					useAn = true
-					break
-				}
-			}
-
-			if useAn {
-				words[i] = "an"
-			} else {
-				words[i] = "a"
+			if second == 's' && strings.HasPrefix(word, "us") {
+				return false
 			}
 		}
+		if strings.HasPrefix(word, "on") || strings.HasPrefix(word, "eu") {
+			return false
+		}
+		return true
 	}
-
-	return strings.Join(words, " ")
+	
+	// Silent H exceptions
+	return first == 'h' && len(word) > 1 && strings.ContainsRune("oe", rune(word[1]))
 }

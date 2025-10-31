@@ -1,6 +1,3 @@
-// Copyright (c) 2025 Spiros Nikoloudakis
-// Licensed under MIT License - see LICENSE file for details
-
 package processor
 
 import (

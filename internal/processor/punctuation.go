@@ -3,21 +3,22 @@
 
 package processor
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // formatPunctuation ensures punctuation spacing consistency
 func formatPunctuation(text string) string {
-	replacer := strings.NewReplacer(
-		" ,", ",",
-		" .", ".",
-		" !", "!",
-		" ?", "?",
-		" ;", ";",
-		" :", ":",
-		" ...", "...",
-		"!!", "!!",
-	)
-	result := replacer.Replace(text)
-	result = strings.ReplaceAll(result, "  ", " ")
+	// Remove spaces before punctuation marks
+	re := regexp.MustCompile(`\s+([,.!?;:])`)
+	result := re.ReplaceAllString(text, "$1")
+	
+	// Handle ellipsis
+	result = strings.ReplaceAll(result, " ...", "...")
+	
+	// Clean up multiple spaces
+	result = regexp.MustCompile(`\s+`).ReplaceAllString(result, " ")
+	
 	return strings.TrimSpace(result)
 }

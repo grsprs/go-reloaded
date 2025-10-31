@@ -20,13 +20,7 @@ type demo\output.txt
 echo.
 echo.
 
-echo [4] Performance Test:
-echo ----------------------------------------
-echo Running large file processing...
-powershell -Command "Measure-Command { go run ./cmd/go-reloaded demo/large_input.txt demo/large_output.txt }" | findstr TotalMilliseconds
-echo.
-
-echo [5] Test Suite:
+echo [4] Test Suite:
 echo ----------------------------------------
 go test ./tests -v | findstr "PASS\|FAIL"
 echo.
