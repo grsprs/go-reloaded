@@ -1,0 +1,1 @@
+Start with 1F (hex) and apply (up, 2) transformations. Format ' this quote ' and handle a hour correctly. Don't forget punctuation , like this ... should work !

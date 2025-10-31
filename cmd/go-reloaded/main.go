@@ -1,9 +1,25 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-reloaded/internal/processor"
+	"os"
+)
 
-// Placeholder main for the go-reloaded executable.
-// Implementation is intentionally omitted in this template.
 func main() {
-    fmt.Println("Go Reloaded - placeholder executable. See docs/") // no actual processing here
+	if len(os.Args) != 3 {
+		fmt.Println("Usage: go run . <input-file> <output-file>")
+		os.Exit(1)
+	}
+
+	inputFile := os.Args[1]
+	outputFile := os.Args[2]
+
+	err := processor.ProcessFile(inputFile, outputFile)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Successfully processed %s → %s\n", inputFile, outputFile)
 }

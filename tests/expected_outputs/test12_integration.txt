@@ -1,0 +1,1 @@
+Start with 31 and APPLY TRANSFORMATIONS. Format 'this quote' and handle an hour correctly. Don't forget punctuation, like this... should work!

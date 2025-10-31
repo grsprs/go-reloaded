@@ -1,3 +1,3 @@
-module github.com/yourusername/go-reloaded
+module go-reloaded
 
-go 1.20
+go 1.25.3

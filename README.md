@@ -1,3 +1,4 @@
+```markdown
 # Go Reloaded
 
 "Go Reloaded" text transformation tool.
@@ -9,7 +10,19 @@ Go Reloaded is a small command-line text transformation system implemented in Go
 Clone the repository, open a terminal in the project root and run:
 
 ```bash
-go run ./cmd/go-reloaded
+go run ./cmd/go-reloaded input.txt output.txt
+```
+
+## Usage
+Process a text file with transformations:
+
+```bash
+go run ./cmd/go-reloaded sample.txt result.txt
+```
+
+View the transformed result:
+```bash
+cat result.txt
 ```
 
 ## Repository layout
@@ -17,3 +30,4 @@ See the `docs/` folder for detailed design documents and the `dev_journal.md` fo
 
 ## Contributing
 Follow the Agile Task Plan in `docs/agile_task_plan.md` and ensure all changes include tests and documentation updates.
+```
