@@ -1,8 +1,14 @@
-# Golden Test Suite – Go Reloaded Text Processor
+# Golden Test Suite – Go Reloaded
 
 ## Overview
-This document defines the official **golden test set** used to validate the Go Reloaded text transformation engine.  
-Each test describes an **input**, the **expected output**, and the **functional behavior** being verified.
+Official validation tests for the Go Reloaded text transformation engine. Each test verifies specific transformation rules and edge cases.
+
+## Test Execution
+```bash
+go test ./internal/processor -golden
+go run ./cmd/go-reloaded input.txt output.txt
+diff expected.txt output.txt
+```
 
 ---
 
@@ -130,8 +136,14 @@ Each test describes an **input**, the **expected output**, and the **functional 
 - Correct **quote and article handling**
 - Original **semantic meaning preserved**
 
----
+## Test Categories
+- **Numeric**: Hex/binary conversions (Tests 1, 7, 10)
+- **Case**: Single/multi-word transformations (Tests 2, 3, 8)
+- **Formatting**: Punctuation and quotes (Tests 4, 5, 9, 11)
+- **Grammar**: Article corrections (Test 6)
+- **Integration**: Combined transformations (Test 12)
 
-**Document Owner:** QA Engineering  
-**Validation Standard:** Golden Test Protocol v1.0  
-**Last Updated:** October 2025
+## Validation Requirements
+- All 12 tests must pass without deviation
+- Output must match expected results exactly
+- Performance: <1s for all test inputs combined

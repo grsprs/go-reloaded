@@ -1,103 +1,61 @@
-# Go Reloaded - Technical Analysis Document
-
-## Project Overview
-Build a text processing tool that transforms input files through linguistic rules and formatting operations.
-
-## Core Transformation Specifications
-
-### Numeric Conversions
-- **Hexadecimal**: Identify pattern `(\w+)\s*\(hex\)`, convert to decimal
-- **Binary**: Identify pattern `(\w+)\s*\(bin\)`, convert to decimal
-- **Error Handling**: Preserve original text on invalid conversions
-
-### Text Case Operations
-- **Single Word**: `(up)`, `(low)`, `(cap)` modifiers
-- **Batch Processing**: `(modifier, n)` for multiple words
-- **Implementation**: String manipulation with word boundary detection
-
-### Punctuation Intelligence
-- **Single Marks**: `.,!?;:` - attach to preceding word
-- **Mark Groups**: `...`, `!?` - maintain grouping, attach to preceding word
-- **Spacing Rules**: Ensure proper word separation after punctuation
-
-### Quote Formatting
-- **Single Quotes**: Eliminate surrounding spaces
-- **Content Preservation**: Maintain internal spacing within quotes
-- **Pattern Matching**: Identify quote pairs and their content
-
-### Grammatical Corrections
-- **Article Rules**: `a` → `an` before vowels (a,e,i,o,u) and silent 'h'
-- **Context Analysis**: Evaluate following word initial sounds
-- **Exception Handling**: Account for words like "university", "hour"
+# Technical Analysis - Go Reloaded
 
 ## System Architecture
 
-### Selected Approach: Pipeline Processing
-
-**Processing Flow:**
+### Pipeline Processing Model
 ```
-File Input → Text Tokenization → Transformation Pipeline → Text Reconstruction → File Output
+Input File → Tokenizer → [Numeric|Case|Punctuation|Quote|Article] → Reconstructor → Output File
 ```
 
-**Transformation Pipeline Stages:**
-1. Number Conversion Engine
-2. Case Modification Handler
-3. Punctuation Formatter
-4. Quote Position Optimizer
-5. Article Correction System
+## Transformation Specifications
 
-### Architecture Justification
+| Type | Pattern | Example | Implementation |
+|------|---------|---------|----------------|
+| Hex | `word (hex)` | `1A (hex)` → `26` | `strconv.ParseInt(s, 16, 64)` |
+| Binary | `word (bin)` | `1010 (bin)` → `10` | `strconv.ParseInt(s, 2, 64)` |
+| Case | `(up/low/cap)` | `word (up)` → `WORD` | `strings.ToUpper()` |
+| Batch | `(mod, n)` | `(up, 2)` → affects 2 words | Loop with counter |
+| Punctuation | `.,!?;:` | `word ,` → `word,` | Regex replacement |
+| Quotes | `' text '` | `' hello '` → `'hello'` | Trim spaces |
+| Articles | `a vowel` | `a apple` → `an apple` | Vowel detection |
 
-**Pipeline Advantages:**
-- **Modular Testing**: Each component independently verifiable
-- **Team Parallelism**: Concurrent development across stages
-- **Maintenance Simplicity**: Isolated bug identification and fixes
-- **Extensibility**: New transformations added as discrete stages
-- **Debug Transparency**: Clear data flow between processing steps
+## Architecture Decision: Pipeline vs FSM
 
-**FSM Rejection Rationale:**
-- Increased complexity for marginal performance gain
-- Challenging to test individual transformation logic
-- Difficult to maintain with multiple team members
-- Limited extensibility for new rule types
+**Selected: Pipeline Processing**
+- ✅ Modular testing and development
+- ✅ Clear separation of concerns  
+- ✅ Easy debugging and maintenance
+- ✅ Team collaboration friendly
 
-## Technical Implementation Strategy
+**Rejected: Finite State Machine**
+- ❌ Complex state management
+- ❌ Harder to test individual rules
+- ❌ Less maintainable for team development
 
-### Data Processing Approach
-- **Token-Based Processing**: Split text into processable units
-- **Transformation Detection**: Identify and categorize modification markers
-- **Sequential Application**: Apply transformations in dependency order
-- **Context Preservation**: Maintain text structure and meaning
+## Implementation Details
 
-### Error Handling Protocol
-- Graceful failure for invalid transformations
-- Original text preservation on processing errors
+### Core Components
+```go
+type Processor interface {
+    Process(text string) string
+}
+
+type Pipeline struct {
+    processors []Processor
+}
+```
+
+### Error Handling Strategy
+- Invalid transformations preserve original text
 - Comprehensive input validation
-- Detailed error reporting for debugging
+- Graceful degradation on processing errors
 
-### Performance Considerations
-- Memory-efficient text processing
-- Optimized string manipulation operations
-- Scalable architecture for large files
-- Balanced trade-off between speed and maintainability
+### Testing Approach
+- **Unit Tests**: Each processor independently
+- **Integration Tests**: Full pipeline validation  
+- **Golden Tests**: End-to-end compliance verification
 
-## Quality Assurance Framework
-
-### Validation Methodology
-- Unit testing per transformation component
-- Integration testing for pipeline workflow
-- Golden test verification against expected outputs
-- Performance benchmarking for optimization
-
-### Success Metrics
-- 100% transformation rule accuracy
-- All test cases passing consistently
-- Efficient processing of benchmark files
-- Clean, maintainable code structure
-- Comprehensive documentation coverage
-
-## Development Priority
-Focus on architectural clarity and transformation accuracy before optimization. The pipeline model ensures project success through systematic, testable development approach.
-
----
-*Analysis complete - ready for implementation phase*
+### Performance Targets
+- Process 1MB files in <1 second
+- Memory usage linear with input size
+- Zero memory leaks in long-running processes
