@@ -1,33 +1,35 @@
-```markdown
 # Go Reloaded
 
-Go Reloaded text transformation tool.
+Text transformation tool with intelligent formatting and linguistic corrections.
 
-## Overview
-Go Reloaded is a small command-line text transformation system implemented in Go. It is intended as a demonstration of analysis-driven design, TDD-first development, and AI-assisted task planning.
+## Features
+- **Numeric Conversions**: `1A (hex)` → `26`, `1010 (bin)` → `10`
+- **Case Operations**: `word (up)` → `WORD`, `(cap, 3)` affects 3 words
+- **Smart Formatting**: Punctuation spacing, quote normalization
+- **Grammar**: Article correction `a apple` → `an apple`
 
 ## Quick Start
-Clone the repository, open a terminal in the project root and run:
-
 ```bash
 go run ./cmd/go-reloaded input.txt output.txt
 ```
 
-## Usage
-Process a text file with transformations:
-
+## Testing
 ```bash
-go run ./cmd/go-reloaded sample.txt result.txt
+go test ./...
+go test ./internal/processor -golden
 ```
 
-View the transformed result:
-```bash
-cat result.txt
-```
+## Documentation
+1. **[Project Brief](docs/brief.md)** - Project overview and goals
+2. **[Technical Analysis](docs/analysis.md)** - Architecture and design decisions  
+3. **[Development Plan](docs/agile_task_plan.md)** - Implementation roadmap
+4. **[Golden Tests](docs/golden_tests.md)** - Validation test suite
+5. **[Dev Journal](docs/dev_journal.md)** - Development notes and decisions
 
-## Repository layout
-See the `docs/` folder for detailed design documents and the `dev_journal.md` for development notes.
+## Architecture
+```
+Input File → Tokenizer → [Transformations] → Reconstructor → Output File
+```
 
 ## Contributing
-Follow the Agile Task Plan in `docs/agile_task_plan.md` and ensure all changes include tests and documentation updates.
-```
+Follow TDD approach with golden test validation. See [Development Plan](docs/agile_task_plan.md) for task structure.
