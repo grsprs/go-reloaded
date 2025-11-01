@@ -5,19 +5,29 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Quality](https://img.shields.io/badge/Quality-A+-brightgreen.svg)](./QUALITY.md)
 
-**Enterprise-grade text transformation tool with intelligent formatting and linguistic corrections.**
+**Text transformation tool with intelligent formatting and linguistic corrections.**
 
-> Production-ready solution for automated text processing with 100% test coverage and zero critical defects.
+> Automated text processing with 100% test coverage and zero critical defects.
 
 ## Features
 - **Numeric Conversions**: `1A (hex)` → `26`, `1010 (bin)` → `10`
 - **Case Operations**: `word (up)` → `WORD`, `(cap, 3)` affects 3 words
 - **Smart Formatting**: Punctuation spacing, quote normalization
 - **Grammar**: Article correction `a apple` → `an apple`
+- **Web Interface**: Modern UI with dark mode support
+- **Auto Port Detection**: Finds available ports automatically
+- **Smart Shutdown**: Auto-closes when browser window closes
 
 ## Quick Start
 ```bash
+# CLI Mode
 go run ./cmd/go-reloaded input.txt output.txt
+
+# Web UI Mode (Recommended)
+go run ./cmd/go-reloaded-web
+# Automatically opens browser interface
+# Auto-detects available port (8080+)
+# Auto-shuts down when browser closes
 ```
 
 ## Testing
@@ -31,6 +41,7 @@ go test ./tests -v
 3. **[Development Plan](docs/agile_task_plan.md)** - Implementation roadmap
 4. **[Golden Tests](docs/golden_tests.md)** - Validation test suite
 5. **[Dev Journal](docs/dev_journal.md)** - Development notes and decisions
+6. **[Web UI Guide](docs/web_ui_guide.md)** - Web interface documentation
 
 ## Requirements Compliance
 ✅ **Numeric Conversions**: `42 (hex)` → `66`, `10 (bin)` → `2`  
@@ -80,8 +91,9 @@ type demo\output.txt
 
 ## 🔍 Source Code Walkthrough
 
-### **Entry Point**
-- [cmd/go-reloaded/main.go](cmd/go-reloaded/main.go) - Application entry, argument handling
+### **Entry Points**
+- [cmd/go-reloaded/main.go](cmd/go-reloaded/main.go) - CLI application entry, argument handling
+- [cmd/go-reloaded-web/main.go](cmd/go-reloaded-web/main.go) - Web UI server with auto port detection
 
 ### **Core Processing**
 - [internal/processor/processor.go](internal/processor/processor.go) - Main orchestration
@@ -164,13 +176,16 @@ Follow TDD approach with golden test validation. See [Development Plan](docs/agi
 - ✅ Clean, maintainable code following Go best practices
 - ✅ Performance: <1s execution time
 - ✅ Zero critical defects or security issues
+- ✅ Modern web interface with responsive design
+- ✅ Auto port detection and graceful shutdown
+- ✅ Dark mode support and responsive design
 
 ## Compliance & Support
 - **Security**: See [SECURITY.md](SECURITY.md) for security policy
 - **Quality**: See [QUALITY.md](QUALITY.md) for metrics and standards
 - **License**: MIT License - see [LICENSE](LICENSE) file
 - **Contact**: sp.nikoloudakis@gmail.com
-- **Support**: Enterprise support available via project maintainers
+- **Support**: Technical support available via project maintainers
 
 ## Audit Trail
 - All code changes tracked in version control

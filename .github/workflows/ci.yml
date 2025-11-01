@@ -12,3 +12,4 @@ jobs:
         go-version: '1.21'
     - run: go test ./tests -v
     - run: go build ./cmd/go-reloaded
+    - run: go build ./cmd/go-reloaded-web

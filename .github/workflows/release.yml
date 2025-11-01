@@ -16,6 +16,9 @@ jobs:
         GOOS=windows GOARCH=amd64 go build -o go-reloaded-windows.exe ./cmd/go-reloaded
         GOOS=linux GOARCH=amd64 go build -o go-reloaded-linux ./cmd/go-reloaded
         GOOS=darwin GOARCH=amd64 go build -o go-reloaded-macos ./cmd/go-reloaded
+        GOOS=windows GOARCH=amd64 go build -o go-reloaded-web-windows.exe ./cmd/go-reloaded-web
+        GOOS=linux GOARCH=amd64 go build -o go-reloaded-web-linux ./cmd/go-reloaded-web
+        GOOS=darwin GOARCH=amd64 go build -o go-reloaded-web-macos ./cmd/go-reloaded-web
     - uses: softprops/action-gh-release@v1
       with:
         files: go-reloaded-*
