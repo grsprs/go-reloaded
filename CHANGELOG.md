@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2025-11-01
+
+### Fixed
+- **UI Color Scheme**: Updated background color to dark grey (#4a5568) for better visual contrast
+- **Button Styling**: Darkened button gradient colors (#4a4fdf, #8b4cdf) for improved consistency
+- **Visual Polish**: Minor UI refinements for improved appearance
+
 ## [1.1.0] - 2025-11-01
 
 ### Added
@@ -53,4 +60,4 @@ All notable changes to this project will be documented in this file.
 - **Development Plan**: Agile task breakdown and implementation roadmap
 - **Golden Tests Specification**: Comprehensive test validation approach
 - **Development Journal**: Detailed development notes and decisions
-- **Audit Navigation**: Professional auditor guidance and checklists
+- **Audit Navigation**: Auditor guidance and checklists

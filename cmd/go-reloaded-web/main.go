@@ -28,80 +28,368 @@ type PageData struct {
 }
 
 const htmlTemplate = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Go Reloaded</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f0f2f5; }
-        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: #4a90e2; color: white; padding: 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; }
-        .main { display: grid; grid-template-columns: 250px 1fr 250px; gap: 20px; padding: 20px; min-height: 600px; }
-        .sidebar { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
-        .sidebar h3 { margin: 0 0 15px 0; color: #495057; font-size: 16px; }
-        .btn-transform { width: 100%; background: #28a745; color: white; border: none; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; font-size: 13px; }
-        .btn-transform:hover { background: #218838; }
-        .example { font-size: 11px; color: #6c757d; margin: 5px 0 15px 0; font-family: monospace; }
-        .center { background: white; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #495057; }
-        .textarea { width: 100%; height: 250px; padding: 15px; border: 2px solid #ced4da; border-radius: 5px; font-family: monospace; font-size: 14px; resize: vertical; }
-        .textarea:focus { outline: none; border-color: #4a90e2; }
-        .btn-main { background: #4a90e2; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
-        .btn-main:hover { background: #357abd; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Reloaded - Text Transformation Suite</title>
+<style>
+:root {
+  --color-bg: #4a5568;
+  --color-bg-panel: #ffffff;
+  --color-text: #222;
+  --color-accent: #5a5fff;
+  --color-accent-gradient: linear-gradient(135deg, #4a4fdf, #8b4cdf);
+  --color-border: #dcdfe6;
+  --color-shadow: rgba(0, 0, 0, 0.05);
+  --radius: 10px;
+  --transition: 0.2s ease;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "Fira Code", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #11131a;
+    --color-bg-panel: #1a1d26;
+    --color-text: #e5e7eb;
+    --color-accent: #7d7fff;
+    --color-accent-gradient: linear-gradient(135deg, #7d7fff, #b57cff);
+    --color-border: #2a2d3a;
+    --color-shadow: rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: var(--color-bg-panel);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+header .logo span.icon {
+  background: var(--color-accent-gradient);
+  color: #fff;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+header .subtitle {
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  grid-template-rows: 1fr;
+  gap: 20px;
+  padding: 20px;
+  background: var(--color-bg);
+}
+
+aside {
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 4px var(--color-shadow);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+aside h3 {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+aside .button {
+  background: var(--color-accent-gradient);
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+aside .button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+aside .example {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  margin-left: 4px;
+  font-family: var(--font-mono);
+}
+
+section.center {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 4px var(--color-shadow);
+  padding: 16px;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  resize: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: var(--transition);
+}
+
+textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(90, 95, 255, 0.2);
+}
+
+.output {
+  margin-top: 12px;
+  background: var(--color-bg);
+}
+
+.transform-btn {
+  margin-top: 16px;
+  background: var(--color-accent-gradient);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.transform-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.clear-btn {
+  margin-top: 8px;
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.clear-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.how-to {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(90, 95, 255, 0.1);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.how-to h4 {
+  margin-bottom: 8px;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+}
+
+footer {
+  height: 40px;
+  background: var(--color-bg-panel);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 1500px) {
+  main {
+    grid-template-columns: 240px 1fr 240px;
+    gap: 16px;
+  }
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Go Reloaded - Text Transformation Tool</h1>
-        </div>
-        <div class="main">
-            <div class="sidebar">
-                <h3>Numbers</h3>
-                <button class="btn-transform" onclick="insertText('42 (hex)')">Hex to Decimal</button>
-                <div class="example">42 (hex) → 66</div>
-                <button class="btn-transform" onclick="insertText('1010 (bin)')">Binary to Decimal</button>
-                <div class="example">1010 (bin) → 10</div>
-                <h3>Case</h3>
-                <button class="btn-transform" onclick="insertText('word (up)')">Uppercase</button>
-                <div class="example">word (up) → WORD</div>
-                <button class="btn-transform" onclick="insertText('word (low)')">Lowercase</button>
-                <div class="example">word (low) → word</div>
-            </div>
-            <div class="center">
-                <form method="POST">
-                    <div class="form-group">
-                        <label>Input Text</label>
-                        <textarea name="input" id="input" class="textarea" placeholder="Enter your text here...">{{.Input}}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Output</label>
-                        <textarea id="output" class="textarea" readonly placeholder="Transformed text will appear here...">{{.Output}}</textarea>
-                    </div>
-                    <button type="submit" class="btn-main">Transform Text</button>
-                </form>
-            </div>
-            <div class="sidebar">
-                <h3>Format</h3>
-                <button class="btn-transform" onclick="insertText('word ,')">Fix Punctuation</button>
-                <div class="example">word , → word,</div>
-                <button class="btn-transform" onclick="insertText(&quot;' text '&quot;)">Fix Quotes</button>
-                <div class="example">' text ' → 'text'</div>
-                <h3>Grammar</h3>
-                <button class="btn-transform" onclick="insertText('a apple')">Fix Articles</button>
-                <div class="example">a apple → an apple</div>
-            </div>
-        </div>
+
+<header>
+  <div class="logo">
+    <span class="icon">GR</span> Go Reloaded
+  </div>
+  <div class="subtitle">Text Transformation Suite</div>
+</header>
+
+<main>
+  <aside>
+    <div>
+      <h3>Numbers</h3>
+      <button class="button" onclick="insertText('(hex)')">Hex → Decimal</button>
+      <div class="example">2A (hex) → 42</div>
+      <button class="button" onclick="insertText('(bin)')">Binary → Decimal</button>
+      <div class="example">1010 (bin) → 10</div>
     </div>
-    <script>
-        function insertText(text) {
-            const input = document.getElementById('input');
-            input.value += text + ' ';
-            input.focus();
-        }
-    </script>
+    <div>
+      <h3>Case</h3>
+      <button class="button" onclick="insertText('(up)')">Uppercase</button>
+      <div class="example">hello (up) → HELLO</div>
+      <button class="button" onclick="insertText('(low)')">Lowercase</button>
+      <div class="example">HELLO (low) → hello</div>
+      <button class="button" onclick="insertText('(cap)')">Capitalize</button>
+      <div class="example">hello (cap) → Hello</div>
+    </div>
+  </aside>
+
+  <section class="center">
+    <form method="POST">
+      <textarea name="input" id="input" placeholder="Enter your text here...">{{.Input}}</textarea>
+      <textarea id="output" class="output" placeholder="Transformed output..." readonly>{{.Output}}</textarea>
+      <button type="submit" class="transform-btn">Transform Text</button>
+      <button type="button" class="clear-btn" onclick="clearText()">Clear</button>
+    </form>
+    <div class="how-to">
+      <h4>How to Use</h4>
+      • Click buttons to insert transformations<br>
+      • Single Enter: New line<br>
+      • Double Enter: Transform text<br>
+      • Use Transform button or double Enter
+    </div>
+  </section>
+
+  <aside>
+    <div>
+      <h3>Format</h3>
+      <button class="button" onclick="insertText(' ,')">Fix Punctuation</button>
+      <div class="example">hello , world → hello, world</div>
+      <button class="button" onclick="insertText(&quot;' text '&quot;)">Normalize Quotes</button>
+      <div class="example">' hello world ' → 'hello world'</div>
+    </div>
+    <div>
+      <h3>Grammar</h3>
+      <button class="button" onclick="insertText('a apple')">Article Correction</button>
+      <div class="example">I saw a apple → I saw an apple</div>
+      <button class="button" onclick="insertText('(up, 2)')">Multi-word Transform</button>
+      <div class="example">hello world (up, 2) → HELLO WORLD</div>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <span>Status: Ready</span>
+  <span>Text Processing Engine v1.1</span>
+</footer>
+
+<script>
+  function insertText(text) {
+    const input = document.getElementById('input');
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const value = input.value;
+    
+    input.value = value.substring(0, start) + text + ' ' + value.substring(end);
+    input.focus();
+    input.setSelectionRange(start + text.length + 1, start + text.length + 1);
+  }
+  
+  function clearText() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('input').focus();
+  }
+  
+  let lastEnterTime = 0;
+  
+  document.getElementById('input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const currentTime = Date.now();
+      if (currentTime - lastEnterTime < 500) {
+        // Double press - transform
+        e.preventDefault();
+        document.querySelector('form').submit();
+        lastEnterTime = 0;
+      } else {
+        // Single press - allow newline
+        lastEnterTime = currentTime;
+      }
+    }
+  });
+  
+  document.getElementById('input').addEventListener('input', function() {
+    if (this.value.trim() === '') {
+      document.getElementById('output').value = '';
+    }
+  });
+  
+  window.addEventListener('beforeunload', function() {
+    navigator.sendBeacon('/shutdown');
+  });
+</script>
+
 </body>
 </html>`
 
