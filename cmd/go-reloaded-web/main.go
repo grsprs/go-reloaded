@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"runtime"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
@@ -26,6 +27,11 @@ type PageData struct {
 	Output string
 	Error  string
 }
+
+var (
+	activeSessions = make(map[string]bool)
+	sessionMutex   sync.Mutex
+)
 
 const htmlTemplate = `<!DOCTYPE html>
 <html lang="en">
@@ -411,6 +417,15 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		data := PageData{}
 
+		// Track session
+		sessionID := r.Header.Get("X-Forwarded-For")
+		if sessionID == "" {
+			sessionID = r.RemoteAddr
+		}
+		sessionMutex.Lock()
+		activeSessions[sessionID] = true
+		sessionMutex.Unlock()
+
 		if r.Method == "POST" {
 			input := r.FormValue("input")
 			if input != "" {
@@ -427,6 +442,18 @@ func main() {
 	shutdownChan := make(chan bool, 1)
 	http.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+		
+		// Remove session
+		sessionID := r.Header.Get("X-Forwarded-For")
+		if sessionID == "" {
+			sessionID = r.RemoteAddr
+		}
+		sessionMutex.Lock()
+		delete(activeSessions, sessionID)
+		sessionCount := len(activeSessions)
+		sessionMutex.Unlock()
+		
+		// Shutdown when any browser closes
 		select {
 		case shutdownChan <- true:
 		default:

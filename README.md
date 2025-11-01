@@ -16,7 +16,8 @@
 - **Grammar**: Article correction `a apple` → `an apple`
 - **Web Interface**: Modern UI with dark mode support
 - **Auto Port Detection**: Finds available ports automatically
-- **Smart Shutdown**: Auto-closes when browser window closes
+- **Smart Shutdown**: Auto-closes when any browser window closes
+- **Multi-Browser Support**: Tracks multiple browser sessions
 
 ## Quick Start
 ```bash
@@ -27,7 +28,8 @@ go run ./cmd/go-reloaded input.txt output.txt
 go run ./cmd/go-reloaded-web
 # Automatically opens browser interface
 # Auto-detects available port (8080+)
-# Auto-shuts down when browser closes
+# Supports multiple browser windows
+# Auto-shuts down when any browser closes
 ```
 
 ## Testing
@@ -93,7 +95,7 @@ type demo\output.txt
 
 ### **Entry Points**
 - [cmd/go-reloaded/main.go](cmd/go-reloaded/main.go) - CLI application entry, argument handling
-- [cmd/go-reloaded-web/main.go](cmd/go-reloaded-web/main.go) - Web UI server with auto port detection
+- [cmd/go-reloaded-web/main.go](cmd/go-reloaded-web/main.go) - Web UI server with multi-browser session tracking
 
 ### **Core Processing**
 - [internal/processor/processor.go](internal/processor/processor.go) - Main orchestration
@@ -176,8 +178,9 @@ Follow TDD approach with golden test validation. See [Development Plan](docs/agi
 - ✅ Clean, maintainable code following Go best practices
 - ✅ Performance: <1s execution time
 - ✅ Zero critical defects or security issues
-- ✅ Modern web interface with responsive design (v1.1.1)
-- ✅ Auto port detection and graceful shutdown
+- ✅ Modern web interface with responsive design (v1.1.2)
+- ✅ Auto port detection and multi-browser session tracking
+- ✅ Smart shutdown when any browser window closes
 - ✅ Dark mode support and clean UI styling
 
 ## Compliance & Support

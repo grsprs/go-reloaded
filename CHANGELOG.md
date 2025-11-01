@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2025-11-01
+
+### Added
+- **Multi-Browser Session Tracking**: Server now tracks multiple browser sessions
+- **Smart Shutdown Logic**: Server shuts down when ANY browser window is closed
+- **Session Management**: Proper cleanup of browser sessions on window close
+
 ## [1.1.1] - 2025-11-01
 
 ### Fixed
