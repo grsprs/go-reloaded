@@ -450,7 +450,6 @@ func main() {
 		}
 		sessionMutex.Lock()
 		delete(activeSessions, sessionID)
-		sessionCount := len(activeSessions)
 		sessionMutex.Unlock()
 		
 		// Shutdown when any browser closes
