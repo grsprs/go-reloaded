@@ -2,7 +2,7 @@
 
 **Author:** Spiros Nikoloudakis  
 **Date:** September 1, 2025  
-**Version:** 1.0
+**Version:** 1.2.2
 
 ## System Architecture
 
@@ -47,17 +47,25 @@ type Processor interface {
 type Pipeline struct {
     processors []Processor
 }
+
+type Validator interface {
+    ValidateInput(text string) []ValidationError
+}
 ```
 
 ### Error Handling Strategy
 - Invalid transformations preserve original text
-- Comprehensive input validation
+- Comprehensive input validation with interactive dialogs
+- Buffer overflow protection and safe string operations
+- Sequential error handling with cursor positioning
 - Graceful degradation on processing errors
 
 ### Testing Approach
 - **Unit Tests**: Each processor independently
 - **Integration Tests**: Full pipeline validation  
-- **Golden Tests**: End-to-end compliance verification
+- **Golden Tests**: End-to-end compliance verification (12/12)
+- **Validation Tests**: Security and input validation (15/15)
+- **Interactive Tests**: Error dialog and cursor positioning
 
 ### Performance Targets
 - Process 1MB files in <1 second

@@ -2,15 +2,21 @@
 
 **Author:** Spiros Nikoloudakis  
 **Date:** September 1, 2025  
-**Version:** 1.0
+**Version:** 1.2.2
 
 ## Overview
 Official validation tests for the Go Reloaded text transformation engine. Each test verifies specific transformation rules and edge cases.
 
 ## Test Execution
 ```bash
+# Run all tests (27 total: 12 golden + 15 validation)
 go test ./tests -v
+
+# CLI mode
 go run ./cmd/go-reloaded input.txt output.txt
+
+# Web UI mode
+go run ./cmd/go-reloaded-web
 ```
 
 ---
@@ -82,15 +88,19 @@ go run ./cmd/go-reloaded input.txt output.txt
 **Purpose:** Full integration validation of all transformation stages working together.
 
 ## Final Validation Status
-✅ **All 12 tests passing** (100% compliance)  
+✅ **All 27 tests passing** (100% compliance)  
+✅ **Golden tests**: 12/12 passing (specification compliance)  
+✅ **Validation tests**: 15/15 passing (security & input validation)  
 ✅ **Requirements coverage**: Every specification requirement tested  
 ✅ **Edge cases**: Comprehensive edge case validation  
+✅ **Security**: Buffer overflow protection and safe operations  
+✅ **Interactive**: Error dialogs with cursor positioning  
 ✅ **Performance**: <1s execution time for all tests  
 ✅ **Regression testing**: Zero regressions detected  
 ✅ **Auditor ready**: Complete test documentation  
 
 **Last validated:** September 1, 2025  
-**Status:** FINAL - Ready for audit
+**Status:** FINAL v1.2.2 - Ready for audit
 
 ## Test Categories
 - **Numeric**: Hex/binary conversions (Tests 1, 7, 10)

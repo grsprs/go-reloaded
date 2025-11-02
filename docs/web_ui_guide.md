@@ -2,7 +2,7 @@
 
 ## Overview
 
-Go Reloaded includes a web interface that provides an intuitive experience for text transformation operations.
+Go Reloaded v1.2.2 includes a modern web interface with comprehensive input validation, interactive error handling, and earth-tone design that provides an intuitive experience for text transformation operations.
 
 ## Quick Start
 
@@ -20,7 +20,8 @@ The web interface will:
 
 ### Header
 - **Logo**: "GR" branded icon with "Go Reloaded" title
-- **Tagline**: "Text Transformation Suite"
+- **About Menu**: Access to documentation, help, changelog, and license
+- **Exit Button**: Graceful shutdown with confirmation dialog
 
 ### Three-Column Layout
 
@@ -55,14 +56,19 @@ The web interface will:
 
 ### Real-time Processing
 - **Form submission** processes all transformations
+- **Input validation** with interactive error dialogs
+- **Sequential error handling** with cursor positioning
 - **Auto-clear** output when input is cleared
 - **Instant feedback** on transformation results
+- **Double Enter** shortcut for quick transformation
 
 ### Modern Design
-- **Clean styling** with modern gradients and shadows
+- **Earth-tone color scheme** with warm, professional styling
 - **Dark mode support** automatically detects system preference
 - **Responsive layout** optimized for 1080p displays
 - **No scrolling required** - fits perfectly in viewport
+- **Interactive error dialogs** with cursor highlighting
+- **Smooth animations** and hover effects
 
 ### Smart Port Management
 - **Auto-detection** finds available ports (8080, 8081, 8082, etc.)
@@ -106,6 +112,9 @@ The web interface will:
 ### Security
 - **Local processing** all text processing happens locally
 - **No data transmission** text never leaves your machine
+- **Input validation** comprehensive security checks
+- **Buffer overflow protection** safe string operations
+- **Bracket/quote validation** with interactive error handling
 - **Safe shutdown** proper cleanup of all resources
 
 ## Troubleshooting
@@ -124,6 +133,27 @@ The web interface will:
 - **Restart server** stop with Ctrl+C and restart
 - **Check permissions** ensure Go has network access
 - **Firewall settings** may block local server access
+
+## Input Validation Features
+
+### Interactive Error Handling
+- **Sequential validation** checks all bracket and quote pairs
+- **Cursor positioning** highlights exact error location
+- **Error dialogs** provide clear descriptions and options
+- **Intentional override** allows processing with syntax errors
+- **Buffer overflow protection** prevents malicious input
+
+### Supported Validations
+- **Bracket matching**: (), [], {}, <>
+- **Quote pairing**: single and double quotes
+- **Keyboard characters only** prevents binary content
+- **Buffer size limits** protects against overflow attacks
+- **Smart contraction detection** handles "don't", "can't", etc.
+
+### Error Dialog Options
+- **Fix It**: Return to input for manual correction
+- **Continue**: Process text with intentional syntax errors
+- **Checkbox**: Mark errors as intentional for batch processing
 
 ## Advanced Usage
 
