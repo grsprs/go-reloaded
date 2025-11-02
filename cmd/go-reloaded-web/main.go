@@ -772,10 +772,20 @@ footer {
     return errors;
   }
   
-  // Only send shutdown on actual page unload, not on clear button
+  // Track if we're intentionally staying on the page
+  let stayingOnPage = false;
+  
+  // Mark that we're staying when clicking buttons
+  document.addEventListener('click', function(e) {
+    if (e.target.type === 'button' || e.target.tagName === 'BUTTON') {
+      stayingOnPage = true;
+      setTimeout(() => { stayingOnPage = false; }, 100);
+    }
+  });
+  
+  // Only send shutdown on actual page unload
   window.addEventListener('beforeunload', function(e) {
-    // Only send shutdown if it's an actual page close, not a button click
-    if (!e.target.activeElement || e.target.activeElement.type !== 'button') {
+    if (!stayingOnPage) {
       navigator.sendBeacon('/shutdown');
     }
   });
