@@ -1,7 +1,7 @@
 # Go Reloaded - Presentation Guide
 
 **Author:** Spiros Nikoloudakis  
-**Date:** September 1, 2025  
+**Date:** November 1, 2025  
 **Presentation Duration:** 10 minutes
 
 ## 1. Project Overview (2 minutes)

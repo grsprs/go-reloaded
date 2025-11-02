@@ -4,6 +4,7 @@
 package processor
 
 import (
+	"go-reloaded/internal/validator"
 	"regexp"
 	"strconv"
 	"strings"
@@ -118,7 +119,10 @@ func transformText(word, modifier string) string {
 		return strings.ToUpper(word)
 	case "cap":
 		if len(word) > 0 {
-			return strings.ToUpper(string(word[0])) + strings.ToLower(word[1:])
+			first, ok := validator.SafeIndex(word, 0)
+			if ok {
+				return strings.ToUpper(string(first)) + strings.ToLower(validator.SafeSlice(word, 1, len(word)))
+			}
 		}
 	}
 	return word

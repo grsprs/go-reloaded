@@ -31,5 +31,5 @@
 ## Project Information
 - **Repository**: Go Reloaded Text Transformation Tool
 - **License**: MIT License
-- **Version**: 1.0.0
-- **Last Updated**: September 1, 2025
+- **Version**: 1.2.2
+- **Last Updated**: November 1, 2025
