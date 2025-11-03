@@ -23,17 +23,20 @@
 - **Interactive Validation**: Sequential error dialogs with cursor positioning
 
 ## Quick Start
-```bash
-# CLI Mode
-go run ./cmd/go-reloaded input.txt output.txt
 
-# Web UI Mode (Recommended)
-go run ./cmd/go-reloaded-web
-# Automatically opens browser interface
-# Auto-detects available port (8080+)
-# Supports multiple browser windows
-# Auto-shuts down when any browser closes
+### 🖥️ CLI Mode (Specification Compliant)
+```bash
+go run ./cmd/go-reloaded input.txt output.txt
 ```
+**Features**: Pure processing, golden test compliant, minimal output
+
+### 🌐 Web UI Mode (Enhanced Experience)
+```bash
+go run ./cmd/go-reloaded-web
+```
+**Features**: Interactive interface, transformation feedback, modern UI
+
+> **📋 For Auditors**: See [INTERFACE_DIFFERENCES.md](INTERFACE_DIFFERENCES.md) for detailed comparison
 
 ## Testing
 ```bash
@@ -57,9 +60,22 @@ go test ./tests -v
 ✅ **File Processing**: `go run . input.txt output.txt`
 
 ## Architecture
+
+### CLI Processing
 ```
-Input File → Tokenizer → [Transformations] → Reconstructor → Output File
+Input File → Core Processor → [Transformations] → Clean Output → Output File
 ```
+
+### Web UI Processing  
+```
+User Input → Enhanced Processor → [Transformations + Info] → Rich Output → Browser Display
+```
+
+**Dual Engine Design**: Both interfaces use identical core transformation logic
+
+## 🔄 Interface Differences Summary
+
+**CLI Mode** provides specification-compliant processing with clean output for automated workflows and golden test validation. **Web UI Mode** adds interactive features including transformation feedback ("Applied up transformation to 3 words"), real-time validation with error dialogs, cursor positioning for syntax errors, and detailed reports showing article corrections ("'a apple' → 'an apple'"). Both modes use identical core processing engines ensuring 100% compliance, but Web UI enhances user experience with verbose output and interface features while CLI maintains minimal output for scripts and auditing.
 
 ## Live Demo
 ```bash
@@ -75,8 +91,9 @@ type demo\output.txt
 
 ### **Start Here - Project Understanding**
 1. **[Project Summary](PROJECT_SUMMARY.md)** - Executive overview and compliance checklist
-2. **[Project Brief](docs/brief.md)** - Technical overview and architecture
-3. **[Requirements Compliance](#requirements-compliance)** - Verify all specifications met
+2. **[Interface Differences](INTERFACE_DIFFERENCES.md)** - 🔴 **CRITICAL**: CLI vs Web UI comparison
+3. **[Project Brief](docs/brief.md)** - Technical overview and architecture
+4. **[Requirements Compliance](#requirements-compliance)** - Verify all specifications met
 
 ### **Code Review Path**
 4. **[Source Code Walkthrough](#-source-code-walkthrough)** - Navigate implementation
@@ -120,7 +137,7 @@ type demo\output.txt
 
 ### **Run All Tests**
 ```bash
-go test ./tests -v  # All 12 golden tests
+go test ./tests -v  # All 27 tests (12 golden + 15 validation)
 ```
 
 ### **Verify Requirements**
@@ -161,7 +178,7 @@ type result.txt  # Should show: "I saw an apple and an hour"
 - [ ] Clean, readable structure
 - [ ] Proper error handling
 - [ ] Comprehensive documentation
-- [ ] All tests passing (12/12)
+- [ ] All tests passing (27/27)
 
 ### **Standards**
 - [ ] MIT license included
@@ -176,17 +193,23 @@ Follow TDD approach with golden test validation. See [Development Plan](docs/agi
 
 ## Project Status: COMPLETE ✅
 - ✅ All requirements implemented and tested
-- ✅ 12/12 golden tests passing (100% compliance)
-- ✅ Auditor-ready documentation
-- ✅ Clean, maintainable code following Go best practices
+- ✅ 27/27 tests passing (100% compliance - 12 golden + 15 validation)
+- ✅ Clean code following Go standards
+- ✅ Maintainable architecture with clear separation
 - ✅ Performance: <1s execution time
-- ✅ Enhanced security with input validation and safe operations
-- ✅ Modern web interface with responsive design (v1.2.2)
-- ✅ Comprehensive input validation with interactive error dialogs
+- ✅ Security with input validation
+- ✅ Web interface with earth-tone design (v1.3.1)
+- ✅ Interactive error handling with cursor positioning
+- ✅ Multi-word transformations with word counting (excludes numbers)
 - ✅ Buffer overflow protection and safe operations
-- ✅ Auto port detection and multi-browser session tracking
-- ✅ Smart shutdown when any browser window closes
-- ✅ Dark mode support and clean UI styling
+- ✅ Auto port detection with session management
+- ✅ Graceful shutdown with resource cleanup
+- ✅ Dark mode support with responsive design
+- ✅ Real-time transformation feedback and info messages
+- ✅ HTML entity decoding for web UI (&#39; → ')
+- ✅ Improved exit button reliability with user feedback
+- ✅ Enhanced bounds checking for slice operations
+- ✅ Multi-word transformation behavior notifications
 
 ## Compliance & Support
 - **Security**: See [SECURITY.md](SECURITY.md) for security policy

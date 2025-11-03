@@ -8,6 +8,13 @@ import (
 	"strings"
 )
 
+// ArticleCorrection represents a correction made
+type ArticleCorrection struct {
+	Original string
+	Corrected string
+	Position int
+}
+
 // correctArticles adjusts 'a' and 'an' before appropriate words
 func correctArticles(text string) string {
 	re := regexp.MustCompile(`\b(a|an)\s+(\w+)`)
@@ -18,11 +25,35 @@ func correctArticles(text string) string {
 		}
 		next := strings.ToLower(parts[1])
 		
+		originalArticle := parts[0]
+		correctArticle := "a"
 		if shouldUseAn(next) {
-			return "an " + parts[1]
+			correctArticle = "an"
 		}
-		return "a " + parts[1]
+		
+		// Track correction if changed
+		if strings.ToLower(originalArticle) != correctArticle {
+			addArticleCorrection(originalArticle + " " + parts[1], correctArticle + " " + parts[1])
+		}
+		
+		return correctArticle + " " + parts[1]
 	})
+}
+
+// Global variable to track corrections
+var articleCorrections []ArticleCorrection
+
+func addArticleCorrection(original, corrected string) {
+	articleCorrections = append(articleCorrections, ArticleCorrection{
+		Original: original,
+		Corrected: corrected,
+	})
+}
+
+func getAndClearArticleCorrections() []ArticleCorrection {
+	corrections := articleCorrections
+	articleCorrections = nil
+	return corrections
 }
 
 // shouldUseAn determines if "an" should be used based on phonetic rules

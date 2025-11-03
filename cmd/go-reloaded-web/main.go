@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"html"
 	"html/template"
 	"log"
 	"net"
@@ -23,15 +24,27 @@ import (
 	"go-reloaded/internal/processor"
 )
 
+// Configuration constants
+const (
+	DefaultPort     = 8080
+	PortScanRange   = 100
+	ShutdownTimeout = 5 * time.Second
+	ResponseDelay   = 100 * time.Millisecond
+	BrowserDelay    = 500 * time.Millisecond
+	SessionDelay    = 200 * time.Millisecond
+)
+
+// PageData represents the template data structure
 type PageData struct {
-	Input  string
-	Output string
-	Error  string
+	Input  string `json:"input"`
+	Output string `json:"output"`
+	Error  string `json:"error"`
 }
 
+// Server state management
 var (
 	activeSessions = make(map[string]bool)
-	sessionMutex   sync.Mutex
+	sessionMutex   sync.RWMutex
 )
 
 const htmlTemplate = `<!DOCTYPE html>
@@ -240,6 +253,17 @@ aside .button:hover {
   transform: translateY(-2px);
 }
 
+.article-always-on {
+  background: var(--color-accent) !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+.article-always-on:hover {
+  transform: none !important;
+  opacity: 0.7 !important;
+}
+
 aside .example {
   font-size: 0.8rem;
   opacity: 0.7;
@@ -344,6 +368,26 @@ textarea:focus {
     background: #4a2c1a;
     border: 1px solid #5c3a26;
     color: #e8b894;
+  }
+}
+
+.info-message {
+  margin-top: 12px;
+  padding: 12px;
+  background: #e8f5e8;
+  border: 1px solid #c3e6c3;
+  border-radius: var(--radius);
+  color: #2d5a2d;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .info-message {
+    background: #1a4a2c;
+    border: 1px solid #265c3a;
+    color: #94e8b8;
   }
 }
 
@@ -513,14 +557,15 @@ footer {
 
   <section class="center">
     <form method="POST">
-      <textarea name="input" id="input" placeholder="Enter your text here...">{{.Input}}</textarea>
-      <textarea id="output" class="output" placeholder="Transformed output..." readonly>{{.Output}}</textarea>
+      <textarea name="input" id="input" placeholder="Enter your text here...">{{.Input | html}}</textarea>
+      <textarea id="output" class="output" placeholder="Transformed output..." readonly>{{.Output | html}}</textarea>
       <div class="button-row">
         <button type="submit" class="transform-btn">Transform Text</button>
         <button type="button" class="clear-btn" onclick="return clearText(event);">Clear</button>
       </div>
     </form>
     <div class="error-message" {{if .Error}}style="display: block;"{{end}}>{{.Error}}</div>
+    <div class="info-message" id="infoMessage" style="display: none;"></div>
     <div class="error-dialog" id="errorDialog" style="display: none;">
       <div class="error-dialog-content">
         <h4>Issue Found</h4>
@@ -532,6 +577,28 @@ footer {
         <div class="dialog-buttons">
           <button onclick="proceedWithError()" class="proceed-btn">Continue</button>
           <button onclick="closeErrorDialog()" class="cancel-btn">Fix It</button>
+        </div>
+      </div>
+    </div>
+    <div class="error-dialog" id="multiWordDialog" style="display: none;">
+      <div class="error-dialog-content">
+        <h4>Multi-word Transform</h4>
+        <p>How many words do you want to transform?</p>
+        <div style="margin: 16px 0;">
+          <label>Transformation type:</label>
+          <select id="transformType" style="margin-left: 8px; padding: 4px;">
+            <option value="up">Uppercase</option>
+            <option value="low">Lowercase</option>
+            <option value="cap">Capitalize</option>
+          </select>
+        </div>
+        <div style="margin: 16px 0;">
+          <label>Number of words:</label>
+          <input type="number" id="wordCount" min="1" max="10" value="2" style="margin-left: 8px; padding: 4px; width: 60px;">
+        </div>
+        <div class="dialog-buttons">
+          <button onclick="insertMultiWord()" class="proceed-btn">Insert</button>
+          <button onclick="closeMultiWordDialog()" class="cancel-btn">Cancel</button>
         </div>
       </div>
     </div>
@@ -555,9 +622,9 @@ footer {
     </div>
     <div>
       <h3>Grammar</h3>
-      <button class="button" onclick="insertText('a apple')">Article Correction</button>
+      <button class="button article-always-on" disabled>Article Correction (Always On)</button>
       <div class="example">I saw a apple → I saw an apple</div>
-      <button class="button" onclick="insertText('(up, 2)')">Multi-word Transform</button>
+      <button class="button" onclick="showMultiWordDialog()">Multi-word Transform</button>
       <div class="example">hello world (up, 2) → HELLO WORLD</div>
     </div>
   </aside>
@@ -565,7 +632,7 @@ footer {
 
 <footer>
   <span>Status: Ready</span>
-  <span>Text Processing Engine v1.2.2</span>
+  <span>Text Processing Engine v1.3.0</span>
 </footer>
 
 <script>
@@ -589,13 +656,31 @@ footer {
     document.getElementById('output').value = '';
     document.getElementById('input').focus();
     hideError();
+    hideInfo();
     return false;
   }
   
   function exitApp() {
     if (confirm('Are you sure you want to exit the application?')) {
-      fetch('/shutdown', { method: 'POST' }).catch(() => {});
-      window.close();
+      // Send force shutdown signal
+      const formData = new FormData();
+      formData.append('force', 'true');
+      fetch('/shutdown', { method: 'POST', body: formData })
+        .then(() => {
+          console.log('Shutdown signal sent');
+          // Try to close window
+          window.close();
+          // If window.close() doesn't work, show message
+          setTimeout(() => {
+            alert('Application is shutting down. You can close this browser tab.');
+          }, 500);
+        })
+        .catch((error) => {
+          console.log('Shutdown request failed:', error);
+          // Still try to close
+          window.close();
+          alert('Application is shutting down. You can close this browser tab.');
+        });
     }
   }
   
@@ -613,6 +698,36 @@ footer {
       errorDiv.style.display = 'none';
     }
   }
+  
+  function showInfo(message) {
+    const infoDiv = document.getElementById('infoMessage');
+    if (infoDiv) {
+      infoDiv.textContent = message;
+      infoDiv.style.display = 'block';
+    }
+  }
+  
+  function hideInfo() {
+    const infoDiv = document.getElementById('infoMessage');
+    if (infoDiv) {
+      infoDiv.style.display = 'none';
+    }
+  }
+  
+  // Check for INFO messages on page load
+  window.addEventListener('load', function() {
+    const input = document.getElementById('input');
+    if (input && input.value.includes('<!--INFO:')) {
+      const infoStart = input.value.indexOf('<!--INFO:');
+      const infoEnd = input.value.indexOf('-->', infoStart);
+      if (infoStart !== -1 && infoEnd !== -1) {
+        const infoMessage = input.value.substring(infoStart + 9, infoEnd);
+        const cleanInput = input.value.substring(0, infoStart);
+        input.value = cleanInput;
+        showInfo('Article corrections made:' + infoMessage);
+      }
+    }
+  });
   
   let lastEnterTime = 0;
   
@@ -791,7 +906,7 @@ footer {
   });
   
   function showAbout() {
-    alert('Go Reloaded v1.2.1\n\nText transformation tool with intelligent formatting.\n\nAuthor: Spiros Nikoloudakis\nEmail: sp.nikoloudakis@gmail.com\nLicense: MIT License\n\nFeatures:\n• Numeric conversions (hex/bin to decimal)\n• Case transformations (up/low/cap)\n• Smart formatting and grammar correction\n• Input validation and security protection');
+    alert('Go Reloaded v1.3.0\n\nText transformation tool with formatting and corrections.\n\nAuthor: Spiros Nikoloudakis\nEmail: sp.nikoloudakis@gmail.com\nLicense: MIT License\n\nFeatures:\n• Numeric conversions (hex/bin to decimal)\n• Case transformations (up/low/cap) - words only\n• Formatting and grammar correction\n• Input validation\n• Interactive error handling\n• Multi-word transformations with word counting');
   }
   
   function showHelp() {
@@ -877,56 +992,97 @@ footer {
       form.submit();
     }
   }
+  
+  function showMultiWordDialog() {
+    document.getElementById('multiWordDialog').style.display = 'flex';
+    document.getElementById('wordCount').focus();
+  }
+  
+  function closeMultiWordDialog() {
+    document.getElementById('multiWordDialog').style.display = 'none';
+  }
+  
+  function insertMultiWord() {
+    const transformType = document.getElementById('transformType').value;
+    const wordCount = document.getElementById('wordCount').value;
+    
+    if (wordCount && wordCount > 0) {
+      const text = '(' + transformType + ', ' + wordCount + ')';
+      insertText(text);
+      closeMultiWordDialog();
+    } else {
+      alert('Please enter a valid number of words (1-10)');
+    }
+  }
 </script>
 
 </body>
 </html>`
 
-// findAvailablePort checks for available port starting from given port
+// findAvailablePort scans for an available port starting from the given port
 func findAvailablePort(startPort int) int {
-	for port := startPort; port < startPort+100; port++ {
-		ln, err := net.Listen("tcp", ":" + strconv.Itoa(port))
-		if err == nil {
-			ln.Close()
+	for port := startPort; port < startPort+PortScanRange; port++ {
+		if isPortAvailable(port) {
 			return port
 		}
 	}
-	return startPort // fallback
+	return startPort // fallback to original port
+}
+
+// isPortAvailable checks if a specific port is available
+func isPortAvailable(port int) bool {
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return false
+	}
+	ln.Close()
+	return true
 }
 
 func main() {
-	tmpl := template.Must(template.New("index").Parse(htmlTemplate))
+	// Create template with custom functions to handle HTML entities
+	funcMap := template.FuncMap{
+		"html": func(s string) template.HTML {
+			return template.HTML(s)
+		},
+	}
+	tmpl := template.Must(template.New("index").Funcs(funcMap).Parse(htmlTemplate))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		data := PageData{}
 
-		// Track session
-		sessionID := r.Header.Get("X-Forwarded-For")
-		if sessionID == "" {
-			sessionID = r.RemoteAddr
-		}
-		sessionMutex.Lock()
-		activeSessions[sessionID] = true
-		sessionMutex.Unlock()
+		// Track active session
+		sessionID := getSessionID(r)
+		trackSession(sessionID)
 
 		if r.Method == "POST" {
 			input := r.FormValue("input")
+			// Decode HTML entities for web UI
+			input = html.UnescapeString(input)
 			intentional := r.FormValue("intentional")
 			if input != "" {
 				// Skip validation if user marked as intentional
 				var output string
 				if intentional == "true" {
-					output = processor.ProcessTextUnsafe(input)
+					output = processor.ProcessTextUnsafeWithInfo(input)
 				} else {
-					output = processor.ProcessText(input)
+					output = processor.ProcessTextWithInfo(input)
 				}
 				
 				if strings.HasPrefix(output, "ERROR:") {
 					data.Error = output[7:] // Remove 'ERROR: ' prefix
 					data.Input = input
 				} else {
-					data.Output = output
-					data.Input = input
+					// Check for INFO messages
+					if strings.Contains(output, "\n\nINFO:") {
+						parts := strings.Split(output, "\n\nINFO:")
+						data.Output = strings.TrimSpace(parts[0])
+						// Store info message for JavaScript to display
+						data.Input = input + "<!--INFO:" + parts[1] + "-->"
+					} else {
+						data.Output = output
+						data.Input = input
+					}
 				}
 			}
 		}
@@ -941,14 +1097,20 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"shutting down"}`))
 		
-		// Remove session
-		sessionID := r.Header.Get("X-Forwarded-For")
-		if sessionID == "" {
-			sessionID = r.RemoteAddr
+		// Check if this is an exit button request
+		if r.FormValue("force") == "true" {
+			// Force kill the application
+			go func() {
+				time.Sleep(100 * time.Millisecond) // Give time for response
+				fmt.Println("\n🛑 Exit button pressed, force killing application...")
+				os.Exit(0)
+			}()
+			return
 		}
-		sessionMutex.Lock()
-		delete(activeSessions, sessionID)
-		sessionMutex.Unlock()
+		
+		// Clean up session
+		sessionID := getSessionID(r)
+		removeSession(sessionID)
 		
 		// Shutdown when any browser closes
 		go func() {
@@ -960,15 +1122,17 @@ func main() {
 		}()
 	})
 
-	// Find available port
-	port := findAvailablePort(8080)
+	// Initialize server configuration
+	port := findAvailablePort(DefaultPort)
 	url := fmt.Sprintf("http://localhost:%d", port)
-	fmt.Printf("🌐 Go Reloaded Web UI starting at %s\n", url)
-	fmt.Println("💻 Press Ctrl+C to stop the server")
+	logger := log.New(os.Stdout, "[GO-RELOADED] ", log.LstdFlags)
 	
-	// Auto-open browser after short delay
+	logger.Printf("🌐 Web UI starting at %s", url)
+	logger.Println("💻 Press Ctrl+C to stop the server")
+	
+	// Auto-open browser after initialization
 	go func() {
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(BrowserDelay)
 		openBrowser(url)
 	}()
 	
@@ -994,11 +1158,34 @@ func main() {
 	}
 	
 	// Graceful shutdown
-	fmt.Println("\n🛑 Shutting down server...")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	logger.Println("🛑 Shutting down server...")
+	ctx, cancel := context.WithTimeout(context.Background(), ShutdownTimeout)
 	defer cancel()
-	srv.Shutdown(ctx)
-	fmt.Println("✅ Server stopped")
+	
+	if err := srv.Shutdown(ctx); err != nil {
+		logger.Printf("Server shutdown error: %v", err)
+	}
+	logger.Println("✅ Server stopped successfully")
+}
+
+// Session management helpers
+func getSessionID(r *http.Request) string {
+	if sessionID := r.Header.Get("X-Forwarded-For"); sessionID != "" {
+		return sessionID
+	}
+	return r.RemoteAddr
+}
+
+func trackSession(sessionID string) {
+	sessionMutex.Lock()
+	defer sessionMutex.Unlock()
+	activeSessions[sessionID] = true
+}
+
+func removeSession(sessionID string) {
+	sessionMutex.Lock()
+	defer sessionMutex.Unlock()
+	delete(activeSessions, sessionID)
 }
 
 // openBrowser opens the default browser to the given URL
@@ -1018,5 +1205,7 @@ func openBrowser(url string) {
 		args = []string{url}
 	}
 
-	exec.Command(cmd, args...).Start()
+	if err := exec.Command(cmd, args...).Start(); err != nil {
+		log.Printf("Failed to open browser: %v", err)
+	}
 }

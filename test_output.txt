@@ -1,0 +1,4 @@
+Test edge CASES WITH 161 AND 3 TRANSFORMATIONS HERE
+
+INFO: Transformations applied:
+• Case: Applied up transformation to 5 words (numbers excluded)

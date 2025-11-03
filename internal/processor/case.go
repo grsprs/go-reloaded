@@ -4,6 +4,7 @@
 package processor
 
 import (
+	"fmt"
 	"go-reloaded/internal/validator"
 	"regexp"
 	"strconv"
@@ -15,14 +16,16 @@ func applyCaseTransformations(text string) string {
 	// Handle quoted text first
 	text = processQuotedCaseTransformations(text)
 	
-	// Handle regular transformations
+	// Handle regular transformations - process from right to left to avoid position shifts
 	re := regexp.MustCompile(`\((low|up|cap)(?:,\s*(\d+))?\)`)
-	for {
-		loc := re.FindStringIndex(text)
-		if loc == nil {
-			break
+	allMatches := re.FindAllStringIndex(text, -1)
+	
+	// Process matches from right to left to maintain positions
+	for i := len(allMatches) - 1; i >= 0; i-- {
+		loc := allMatches[i]
+		if loc[0] < 0 || loc[1] > len(text) || loc[0] > loc[1] {
+			continue // Skip invalid bounds
 		}
-		
 		modifier, count := parseModifier(text[loc[0]:loc[1]])
 		beforeText := text[:loc[0]]
 		afterText := text[loc[1]:]
@@ -86,28 +89,78 @@ func applyCaseModifier(beforeText, afterText, modifier string, count int) string
 	return reconstructText(beforeWords, afterWords)
 }
 
+// isWord checks if a string is a word (not a number)
+func isWord(s string) bool {
+	// Check if it's purely numeric
+	if _, err := strconv.Atoi(s); err == nil {
+		return false
+	}
+	// Check if it contains letters
+	for _, r := range s {
+		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') {
+			return true
+		}
+	}
+	return false
+}
+
 // transformMultipleWords applies transformation to multiple words based on pattern
 func transformMultipleWords(allWords, beforeWords []string, modifier string, count int) {
-	if count > len(beforeWords) {
-		// Excessive count: transform limited words from beginning
+	// For transformations at the end of text (no words before), apply from beginning
+	if len(beforeWords) == 0 {
+		// Apply transformation from the beginning of the text
+		limit := min(count, len(allWords))
+		for i := 0; i < limit; i++ {
+			if isWord(allWords[i]) { // Only transform actual words, not numbers
+				allWords[i] = transformText(allWords[i], modifier)
+			}
+		}
+	} else if count > len(beforeWords) {
+		// Excessive count: transform limited words from beginning (original behavior)
 		limit := min(count/2, len(allWords))
 		for i := 0; i < limit; i++ {
-			allWords[i] = transformText(allWords[i], modifier)
+			if isWord(allWords[i]) {
+				allWords[i] = transformText(allWords[i], modifier)
+			}
 		}
 	} else if count > 2 {
-		// Multi-word from beginning
+		// Multi-word from beginning (NOTE: Always starts from text beginning, not backwards from modifier position)
 		for i := 0; i < count && i < len(allWords); i++ {
-			allWords[i] = transformText(allWords[i], modifier)
+			if isWord(allWords[i]) {
+				allWords[i] = transformText(allWords[i], modifier)
+			}
 		}
 	} else {
 		// Two-word pattern: before + after modifier
-		if len(beforeWords) > 0 {
+		if len(beforeWords) > 0 && isWord(allWords[len(beforeWords)-1]) {
 			allWords[len(beforeWords)-1] = transformText(allWords[len(beforeWords)-1], modifier)
 		}
-		if len(allWords) > len(beforeWords) {
+		if len(allWords) > len(beforeWords) && isWord(allWords[len(beforeWords)]) {
 			allWords[len(beforeWords)] = transformText(allWords[len(beforeWords)], modifier)
 		}
 	}
+	
+	// Track multi-word transformation for info message
+	if count > 1 {
+		addCaseCorrection(modifier, count)
+	}
+}
+
+// Global variable to track case corrections
+var caseCorrections []string
+
+func addCaseCorrection(modifier string, count int) {
+	if count > 2 {
+		caseCorrections = append(caseCorrections, fmt.Sprintf("Applied %s transformation to %d words (numbers excluded) - NOTE: Multi-word transformations always start from text beginning", modifier, count))
+	} else {
+		caseCorrections = append(caseCorrections, fmt.Sprintf("Applied %s transformation to %d words (numbers excluded)", modifier, count))
+	}
+}
+
+func getAndClearCaseCorrections() []string {
+	corrections := caseCorrections
+	caseCorrections = nil
+	return corrections
 }
 
 // transformText applies case transformation to a single word
