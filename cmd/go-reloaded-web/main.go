@@ -615,9 +615,9 @@ footer {
   <aside>
     <div>
       <h3>Format</h3>
-      <button class="button" onclick="insertText(' ,')">Fix Punctuation</button>
+      <button class="button article-always-on" disabled>Fix Punctuation (Always On)</button>
       <div class="example">hello , world → hello, world</div>
-      <button class="button" onclick="insertText(&quot;' text '&quot;)">Normalize Quotes</button>
+      <button class="button article-always-on" disabled>Normalize Quotes (Always On)</button>
       <div class="example">' hello world ' → 'hello world'</div>
     </div>
     <div>

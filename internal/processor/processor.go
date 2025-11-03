@@ -76,6 +76,8 @@ func processTextCore(text string) string {
 	// Clear tracking data without using it
 	getAndClearArticleCorrections()
 	getAndClearCaseCorrections()
+	getAndClearPunctuationCorrections()
+	getAndClearQuoteCorrections()
 
 	return strings.TrimSpace(result)
 }
@@ -102,8 +104,10 @@ func processTextInternal(text string) string {
 	// Check for corrections and append info
 	articleCorrections := getAndClearArticleCorrections()
 	caseCorrections := getAndClearCaseCorrections()
+	punctuationCorrections := getAndClearPunctuationCorrections()
+	quoteCorrections := getAndClearQuoteCorrections()
 	
-	if len(articleCorrections) > 0 || len(caseCorrections) > 0 {
+	if len(articleCorrections) > 0 || len(caseCorrections) > 0 || len(punctuationCorrections) > 0 || len(quoteCorrections) > 0 {
 		result += "\n\nINFO: Transformations applied:\n"
 		
 		for _, correction := range articleCorrections {
@@ -112,6 +116,14 @@ func processTextInternal(text string) string {
 		
 		for _, correction := range caseCorrections {
 			result += fmt.Sprintf("• Case: %s\n", correction)
+		}
+		
+		for _, correction := range punctuationCorrections {
+			result += fmt.Sprintf("• Punctuation: %s\n", correction)
+		}
+		
+		for _, correction := range quoteCorrections {
+			result += fmt.Sprintf("• Quotes: %s\n", correction)
 		}
 	}
 

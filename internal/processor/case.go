@@ -36,10 +36,13 @@ func applyCaseTransformations(text string) string {
 	return text
 }
 
-// processQuotedCaseTransformations handles case transformations within quotes
+// processQuotedCaseTransformations handles case transformations within quotes and brackets
 func processQuotedCaseTransformations(text string) string {
+	result := text
+	
+	// Single quotes
 	re := regexp.MustCompile(`'\s*([^']*?)\s*\((low|up|cap)\)\s*'`)
-	return re.ReplaceAllStringFunc(text, func(match string) string {
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
 		parts := re.FindStringSubmatch(match)
 		if len(parts) < 3 {
 			return match
@@ -48,6 +51,68 @@ func processQuotedCaseTransformations(text string) string {
 		modifier := strings.ToLower(parts[2])
 		return "'" + transformText(content, modifier) + "'"
 	})
+	
+	// Double quotes
+	re = regexp.MustCompile(`"\s*([^"]*?)\s*\((low|up|cap)\)\s*"`)
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 3 {
+			return match
+		}
+		content := strings.TrimSpace(parts[1])
+		modifier := strings.ToLower(parts[2])
+		return `"` + transformText(content, modifier) + `"`
+	})
+	
+	// Parentheses
+	re = regexp.MustCompile(`\(\s*([^)]*?)\s*\((low|up|cap)\)\s*\)`)
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 3 {
+			return match
+		}
+		content := strings.TrimSpace(parts[1])
+		modifier := strings.ToLower(parts[2])
+		return "(" + transformText(content, modifier) + ")"
+	})
+	
+	// Square brackets
+	re = regexp.MustCompile(`\[\s*([^\]]*?)\s*\((low|up|cap)\)\s*\]`)
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 3 {
+			return match
+		}
+		content := strings.TrimSpace(parts[1])
+		modifier := strings.ToLower(parts[2])
+		return "[" + transformText(content, modifier) + "]"
+	})
+	
+	// Curly braces
+	re = regexp.MustCompile(`\{\s*([^}]*?)\s*\((low|up|cap)\)\s*\}`)
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 3 {
+			return match
+		}
+		content := strings.TrimSpace(parts[1])
+		modifier := strings.ToLower(parts[2])
+		return "{" + transformText(content, modifier) + "}"
+	})
+	
+	// Angle brackets
+	re = regexp.MustCompile(`<\s*([^>]*?)\s*\((low|up|cap)\)\s*>`)
+	result = re.ReplaceAllStringFunc(result, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		if len(parts) < 3 {
+			return match
+		}
+		content := strings.TrimSpace(parts[1])
+		modifier := strings.ToLower(parts[2])
+		return "<" + transformText(content, modifier) + ">"
+	})
+	
+	return result
 }
 
 // parseModifier extracts modifier and count from pattern like (up,2)
@@ -106,37 +171,21 @@ func isWord(s string) bool {
 
 // transformMultipleWords applies transformation to multiple words based on pattern
 func transformMultipleWords(allWords, beforeWords []string, modifier string, count int) {
-	// For transformations at the end of text (no words before), apply from beginning
-	if len(beforeWords) == 0 {
-		// Apply transformation from the beginning of the text
-		limit := min(count, len(allWords))
-		for i := 0; i < limit; i++ {
-			if isWord(allWords[i]) { // Only transform actual words, not numbers
-				allWords[i] = transformText(allWords[i], modifier)
-			}
-		}
-	} else if count > len(beforeWords) {
-		// Excessive count: transform limited words from beginning (original behavior)
-		limit := min(count/2, len(allWords))
-		for i := 0; i < limit; i++ {
+	// SPECIFICATION COMPLIANT: Multi-word transformations work right-to-left from modifier position
+	if count > 1 {
+		// Transform N words backwards from the modifier position
+		startPos := len(beforeWords) - 1
+		transformed := 0
+		for i := startPos; i >= 0 && transformed < count; i-- {
 			if isWord(allWords[i]) {
 				allWords[i] = transformText(allWords[i], modifier)
-			}
-		}
-	} else if count > 2 {
-		// Multi-word from beginning (NOTE: Always starts from text beginning, not backwards from modifier position)
-		for i := 0; i < count && i < len(allWords); i++ {
-			if isWord(allWords[i]) {
-				allWords[i] = transformText(allWords[i], modifier)
+				transformed++
 			}
 		}
 	} else {
-		// Two-word pattern: before + after modifier
+		// Single word transformation: transform the word immediately before modifier
 		if len(beforeWords) > 0 && isWord(allWords[len(beforeWords)-1]) {
 			allWords[len(beforeWords)-1] = transformText(allWords[len(beforeWords)-1], modifier)
-		}
-		if len(allWords) > len(beforeWords) && isWord(allWords[len(beforeWords)]) {
-			allWords[len(beforeWords)] = transformText(allWords[len(beforeWords)], modifier)
 		}
 	}
 	

@@ -1,15 +1,15 @@
 # Golden Test Suite – Go Reloaded
 
 **Author:** Spiros Nikoloudakis  
-**Date:** September 1, 2025  
-**Version:** 1.2.2
+**Date:** November 3, 2025  
+**Version:** 1.4.0
 
 ## Overview
 Official validation tests for the Go Reloaded text transformation engine. Each test verifies specific transformation rules and edge cases.
 
 ## Test Execution
 ```bash
-# Run all tests (27 total: 12 golden + 15 validation)
+# Run all tests (29 total: 14 golden + 15 validation)
 go test ./tests -v
 
 # CLI mode
@@ -87,9 +87,19 @@ go run ./cmd/go-reloaded-web
 **Expected Output:** `Start with 31 and APPLY TRANSFORMATIONS. Format 'this quote' and handle an hour correctly. Don't forget punctuation, like this... should work!`  
 **Purpose:** Full integration validation of all transformation stages working together.
 
+### Test 13 – Original Spec Example 1
+**Input:** `it was the age of foolishness (cap, 6) , it was the epoch of belief`  
+**Expected Output:** `It Was The Age Of Foolishness, it was the epoch of belief`  
+**Purpose:** Validate right-to-left multi-word transformation behavior per original specification.
+
+### Test 14 – Original Spec Example 2
+**Input:** `IT WAS THE (low, 3) winter of despair`  
+**Expected Output:** `it was the winter of despair`  
+**Purpose:** Confirm multi-word lowercase transformation working backwards from modifier.
+
 ## Final Validation Status
-✅ **All 27 tests passing** (100% compliance)  
-✅ **Golden tests**: 12/12 passing (specification compliance)  
+✅ **All 29 tests passing** (100% compliance)  
+✅ **Golden tests**: 14/14 passing (specification compliance)  
 ✅ **Validation tests**: 15/15 passing (security & input validation)  
 ✅ **Requirements coverage**: Every specification requirement tested  
 ✅ **Edge cases**: Comprehensive edge case validation  
@@ -99,8 +109,8 @@ go run ./cmd/go-reloaded-web
 ✅ **Regression testing**: Zero regressions detected  
 ✅ **Auditor ready**: Complete test documentation  
 
-**Last validated:** September 1, 2025  
-**Status:** FINAL v1.3.0 - Complete
+**Last validated:** November 3, 2025  
+**Status:** FINAL v1.4.0 - Complete
 
 ## Test Categories
 - **Numeric**: Hex/binary conversions (Tests 1, 7, 10)
@@ -110,6 +120,6 @@ go run ./cmd/go-reloaded-web
 - **Integration**: Combined transformations (Test 12)
 
 ## Validation Requirements
-- All 12 tests must pass without deviation
+- All 14 tests must pass without deviation
 - Output must match expected results exactly
 - Performance: <1s for all test inputs combined

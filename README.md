@@ -12,7 +12,7 @@
 ## Features
 - **Numeric Conversions**: `1A (hex)` → `26`, `1010 (bin)` → `10`
 - **Case Operations**: `word (up)` → `WORD`, `(cap, 3)` affects 3 words
-- **Smart Formatting**: Punctuation spacing, quote normalization
+- **Smart Formatting**: Enhanced punctuation spacing, comprehensive quote/bracket normalization
 - **Grammar**: Article correction `a apple` → `an apple`
 - **Web Interface**: Modern UI with dark mode support
 - **Auto Port Detection**: Finds available ports automatically
@@ -137,7 +137,7 @@ type demo\output.txt
 
 ### **Run All Tests**
 ```bash
-go test ./tests -v  # All 27 tests (12 golden + 15 validation)
+go test ./tests -v  # All 29 tests (14 golden + 15 validation)
 ```
 
 ### **Verify Requirements**
@@ -178,7 +178,7 @@ type result.txt  # Should show: "I saw an apple and an hour"
 - [ ] Clean, readable structure
 - [ ] Proper error handling
 - [ ] Comprehensive documentation
-- [ ] All tests passing (27/27)
+- [ ] All tests passing (29/29)
 
 ### **Standards**
 - [ ] MIT license included
@@ -193,12 +193,12 @@ Follow TDD approach with golden test validation. See [Development Plan](docs/agi
 
 ## Project Status: COMPLETE ✅
 - ✅ All requirements implemented and tested
-- ✅ 27/27 tests passing (100% compliance - 12 golden + 15 validation)
+- ✅ 29/29 tests passing (100% compliance - 14 golden + 15 validation)
 - ✅ Clean code following Go standards
 - ✅ Maintainable architecture with clear separation
 - ✅ Performance: <1s execution time
 - ✅ Security with input validation
-- ✅ Web interface with earth-tone design (v1.3.1)
+- ✅ Web interface with earth-tone design and always-on formatting (v1.4.0)
 - ✅ Interactive error handling with cursor positioning
 - ✅ Multi-word transformations with word counting (excludes numbers)
 - ✅ Buffer overflow protection and safe operations
@@ -210,6 +210,9 @@ Follow TDD approach with golden test validation. See [Development Plan](docs/agi
 - ✅ Improved exit button reliability with user feedback
 - ✅ Enhanced bounds checking for slice operations
 - ✅ Multi-word transformation behavior notifications
+- ✅ Always-on punctuation and quote formatting with feedback
+- ✅ Enhanced bracket support (parentheses, square, curly, angle)
+- ✅ Comprehensive punctuation handling (all keyboard symbols)
 
 ## Compliance & Support
 - **Security**: See [SECURITY.md](SECURITY.md) for security policy

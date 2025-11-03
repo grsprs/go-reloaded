@@ -27,7 +27,7 @@ func TestGoldenTests(t *testing.T) {
 		{
 			name:     "Test 3 - Multi-Word Case Operations",
 			input:    "transform these three words (cap, 3) properly",
-			expected: "Transform These Three words properly",
+			expected: "transform These Three Words properly",
 		},
 		{
 			name:     "Test 4 - Punctuation Formatting",
@@ -52,7 +52,7 @@ func TestGoldenTests(t *testing.T) {
 		{
 			name:     "Test 8 - Excessive Word Count",
 			input:    "only two words here (up, 5) total",
-			expected: "ONLY TWO words here total",
+			expected: "ONLY TWO WORDS HERE total",
 		},
 		{
 			name:     "Test 9 - Complex Punctuation",
@@ -72,7 +72,17 @@ func TestGoldenTests(t *testing.T) {
 		{
 			name:     "Test 12 - Comprehensive Example",
 			input:    "Start with 1F (hex) and apply (up, 2) transformations. Format ' this quote ' and handle a hour correctly. Don't forget punctuation , like this ... should work !",
-			expected: "Start with 31 and APPLY TRANSFORMATIONS. Format 'this quote' and handle an hour correctly. Don't forget punctuation, like this... should work!",
+			expected: "Start with 31 AND APPLY transformations. Format 'this quote' and handle an hour correctly. Don't forget punctuation, like this... should work!",
+		},
+		{
+			name:     "Test 13 - Original Spec Example 1",
+			input:    "it was the age of foolishness (cap, 6) , it was the epoch of belief",
+			expected: "It Was The Age Of Foolishness, it was the epoch of belief",
+		},
+		{
+			name:     "Test 14 - Original Spec Example 2",
+			input:    "IT WAS THE (low, 3) winter of despair",
+			expected: "it was the winter of despair",
 		},
 	}
 

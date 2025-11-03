@@ -2,7 +2,7 @@
 
 ## Overview
 
-Go Reloaded v1.3.1 includes a modern web interface with comprehensive input validation, interactive error handling, and earth-tone design that provides an intuitive experience for text transformation operations.
+Go Reloaded v1.4.0 includes a modern web interface with comprehensive input validation, interactive error handling, and earth-tone design that provides an intuitive experience for text transformation operations.
 
 ## Quick Start
 
@@ -118,6 +118,9 @@ The web interface will:
 - **Safe shutdown** proper cleanup of all resources
 - **HTML entity decoding** automatically converts &#39; to ' for proper quote processing
 - **Enhanced exit button** with improved reliability and user feedback
+- **Always-on formatting** automatic punctuation and quote processing with feedback
+- **Enhanced bracket support** comprehensive handling of all bracket types
+- **Real-time feedback** green info area shows applied transformations
 
 ## Troubleshooting
 
